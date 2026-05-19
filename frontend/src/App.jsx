@@ -32,7 +32,7 @@ const App = () => {
     } else {
       document.body.setAttribute("data-theme", theme);
     }
-  }, []);
+  }, []);\
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
