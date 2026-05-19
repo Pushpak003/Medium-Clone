@@ -3,7 +3,7 @@
 This is a full-fledged Medium clone developed extensively using React, Node.js, Express, MongoDB, and Redux Toolkit.
 It offers a modern blog editor, Google authentication, dynamic blog pages, search functionality, user profiles with social links,
 a dashboard for managing blogs, blog post analytics, interaction features like likes and comments, notifications, and more.
-The website is designed to be responsive, providing an optimal viewing experience across all screen sizes.
+The website is designed to be responsive, providing an optimal viewing experience across all screen sizes
 
 [Live Link](https://medium-ix5b.onrender.com/)
 
