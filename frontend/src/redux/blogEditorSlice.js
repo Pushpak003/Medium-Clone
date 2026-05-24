@@ -52,4 +52,4 @@ export const {
   setTags,
   resetBlogState,
 } = blogEditorSlice.actions;
-export default blogEditorSlice.reducer
+export default blogEditorSlice.reducer;
