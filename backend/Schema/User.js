@@ -109,6 +109,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
     blogs: {
       type: [Schema.Types.ObjectId],
       ref: "blogs",

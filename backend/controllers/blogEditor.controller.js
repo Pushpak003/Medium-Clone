@@ -1,14 +1,4 @@
-// import { v2 as cloudinary } from "cloudinary";
 
-// export const getBannerUrl = async (req, res) => {
-//   let { img } = req.body;
-
-//   if (img) {
-//     let uploadedResponse = await cloudinary.uploader.upload(img);
-//     img = uploadedResponse.secure_url;
-//     res.status(200).json(img);
-//   }
-// };
 
 import { v2 as cloudinary } from "cloudinary";
 

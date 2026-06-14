@@ -5,14 +5,14 @@ import {
   writtenBlogsOfUser,
   writtenBlogsOfUserCount,
 } from "../controllers/user.controller.js";
-import { Auth } from "../middleware/auth.middleware.js";
+import  {protect , optionalAuth } from "../middleware/auth.middleware.js";
 
 const userRouter = express.Router();
 
 userRouter.post("/search", searchUser);
 userRouter.post("/profile", getProfileOfUser);
 
-userRouter.post("/written-blogs", Auth, writtenBlogsOfUser);
-userRouter.post("/written-blogs-count", Auth, writtenBlogsOfUserCount);
+userRouter.post("/written-blogs", protect, writtenBlogsOfUser);
+userRouter.post("/written-blogs-count", protect, writtenBlogsOfUserCount);
 
 export default userRouter;

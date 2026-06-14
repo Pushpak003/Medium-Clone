@@ -41,7 +41,7 @@ export const changePassword = (req, res) => {
               .json({ error: "New password is same as old!" });
           }
 
-          bcrypt.hash(newPassword, 5, (err, hashed_password) => {
+          bcrypt.hash(newPassword, 10, (err, hashed_password) => {
             User.findOneAndUpdate(
               { _id: req.user },
               { "personal_info.password": hashed_password }

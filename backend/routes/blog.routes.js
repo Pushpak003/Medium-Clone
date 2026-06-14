@@ -8,7 +8,7 @@ import {
   searchBlogs,
   searchBlogsCount,
 } from "../controllers/blog.controller.js";
-import { Auth } from "../middleware/auth.middleware.js";
+import  {protect , optionalAuth }from "../middleware/auth.middleware.js";
 
 const blogRouter = express.Router();
 
@@ -20,7 +20,7 @@ blogRouter.post("/search-blogs-count", searchBlogsCount);
 blogRouter.post("/search-blogs", searchBlogs);
 
 blogRouter.post("/", getBlog);
-blogRouter.post("/create", Auth, createBlog);
+blogRouter.post("/create", protect, createBlog);
 
 export default blogRouter;
 

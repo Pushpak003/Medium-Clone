@@ -1,5 +1,26 @@
+# Dependencies
 node_modules/
-.env*
-.env
-backend/firebase-key.json
+*/node_modules/
 
+# Environment variables — KABHI COMMIT MAT KARO
+.env
+.env.local
+.env.production
+backend/.env
+frontend/.env
+
+# Build output
+dist/
+build/
+
+# Mac OS system files
+.DS_Store
+**/.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/

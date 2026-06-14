@@ -1,18 +1,45 @@
-import jwt from "jsonwebtoken";
+import { verifyAccessToken } from "../utils/jwt.utils.js";
+import { AppError } from "./error.middleware.js";
 
-export const Auth = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+// ── Protect Route — Login Required ───────────────────────────────────────────
+// Usage: router.post("/create", protect, createBlogController)
+export const protect = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
 
-  if (token == null) {
-    return res.status(401).json({ error: "No token found" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "Access token is invalid" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return next(new AppError("Access denied. No token provided.", 401));
     }
-    req.user = user.id;
+
+    const token = authHeader.split(" ")[1];
+    const decoded = verifyAccessToken(token);
+
+    // req.user mein user id daal do — controllers mein kaam aayega
+    req.user = decoded.id;
     next();
-  });
+  } catch (err) {
+    // verifyAccessToken throw karega agar token invalid/expired ho
+    next(err);
+  }
+};
+// Usage: Public routes jahan logged-in user ko extra data milta hai
+// e.g. blog read — guest bhi padh sakta hai, loggedin user ko "liked" status bhi milega
+export const optionalAuth = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      req.user = null;
+      return next();
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = verifyAccessToken(token);
+    req.user = decoded.id;
+    next();
+  } catch {
+    // Token invalid ho to bhi chalega — sirf null set karo
+    req.user = null;
+    next();
+  }
 };

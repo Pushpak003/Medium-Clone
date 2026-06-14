@@ -11,6 +11,7 @@ import SideNav from "./components/ui/SideNav";
 import EditProfilePage from "./pages/EditProfilePage";
 import ChangePwdPage from "./pages/ChangePwdPage";
 import ManageBlogs from "./pages/ManageBlogs";
+import { ProtectedRoute, GuestRoute } from "./components/ProtectedRoute";
 import { createContext, useEffect, useState } from "react";
 
 export const ThemeContext = createContext({});
@@ -26,7 +27,6 @@ const App = () => {
     if (themeFromLs) {
       setTheme(() => {
         document.body.setAttribute("data-theme", themeFromLs);
-
         return themeFromLs;
       });
     } else {
@@ -38,21 +38,29 @@ const App = () => {
     <ThemeContext.Provider value={{ theme, setTheme }}>
       {!pathname.startsWith("/editor") && <Navbar />}
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Homepage />} />
-        <Route path="/signin" element={<UserAuthForm type="sign-in" />} />
-        <Route path="/signup" element={<UserAuthForm type="sign-up" />} />
-        <Route path="/editor" element={<Editor />} />
-        <Route path="/editor/:id" element={<Editor />} />
-        <Route path="/dashboard" element={<SideNav />}>
-          <Route path="blogs" element={<ManageBlogs />} />
-        </Route>
-        <Route path="/settings" element={<SideNav />}>
-          <Route path="edit-profile" element={<EditProfilePage />} />
-          <Route path="change-password" element={<ChangePwdPage />} />
-        </Route>
         <Route path="/search/:query" element={<SearchPage />} />
         <Route path="/user/:id" element={<ProfilePage />} />
         <Route path="/blog/:id" element={<BlogPage />} />
+
+        {/* Guest-only routes (logged-in hain to home pe redirect) */}
+        <Route path="/signin" element={<GuestRoute><UserAuthForm type="sign-in" /></GuestRoute>} />
+        <Route path="/signup" element={<GuestRoute><UserAuthForm type="sign-up" /></GuestRoute>} />
+
+        {/* Protected routes (login required) */}
+        <Route path="/editor" element={<ProtectedRoute><Editor /></ProtectedRoute>} />
+        <Route path="/editor/:id" element={<ProtectedRoute><Editor /></ProtectedRoute>} />
+
+        <Route path="/dashboard" element={<ProtectedRoute><SideNav /></ProtectedRoute>}>
+          <Route path="blogs" element={<ManageBlogs />} />
+        </Route>
+
+        <Route path="/settings" element={<ProtectedRoute><SideNav /></ProtectedRoute>}>
+          <Route path="edit-profile" element={<EditProfilePage />} />
+          <Route path="change-password" element={<ChangePwdPage />} />
+        </Route>
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </ThemeContext.Provider>

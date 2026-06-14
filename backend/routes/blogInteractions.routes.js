@@ -6,20 +6,20 @@ import {
   getReplies,
   isLikedByUser,
   likeBlog,
-} from "../controllers/blog.inteactions.controllers.js";
-import { Auth } from "../middleware/auth.middleware.js";
+} from "../controllers/blogInteractions.controller.js";
+import  {protect , optionalAuth } from "../middleware/auth.middleware.js";
 
 const blogInteractionRouter = express.Router();
 
-blogInteractionRouter.post("/like", Auth, likeBlog);
-blogInteractionRouter.post("/isLiked", Auth, isLikedByUser);
+blogInteractionRouter.post("/like", protect, likeBlog);
+blogInteractionRouter.post("/isLiked", protect, isLikedByUser);
 
-blogInteractionRouter.post("/comment", Auth, addComment);
+blogInteractionRouter.post("/comment", protect, addComment);
 blogInteractionRouter.post("/comment/get", getComments);
 
 blogInteractionRouter.post("/reply", getReplies);
 
-blogInteractionRouter.post("/delete", Auth, deleteBlog);
+blogInteractionRouter.post("/delete", protect, deleteBlog);
 
 export default blogInteractionRouter;
 
