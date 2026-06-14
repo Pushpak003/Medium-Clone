@@ -1,23 +1,21 @@
+import { cloudinary } from "../config/cloudinary.js";
+import { AppError } from "../middleware/error.middleware.js";
 
-
-import { v2 as cloudinary } from "cloudinary";
-
-export const getBannerUrl = async (req, res) => {
+export const getBannerUrl = async (req, res, next) => {
   try {
     const { img } = req.body;
 
-    // Input validation
     if (!img) {
-      return res.status(400).json({ error: "Image data is required" });
+      return next(new AppError("Image data is required", 400));
     }
 
-    // Upload image to Cloudinary
-    const uploadedResponse = await cloudinary.uploader.upload(img);
+    const uploadedResponse = await cloudinary.uploader.upload(img, {
+      folder: "medium-clone/banners",
+      resource_type: "image",
+    });
 
-    // Send the secure URL of the uploaded image in the response
-    res.status(200).json(uploadedResponse.secure_url);
-  } catch (error) {
-    console.error("Error uploading image to Cloudinary:", error);
-    res.status(500).json({ error: "Failed to upload image" });
+    return res.status(200).json({ success: true, url: uploadedResponse.secure_url });
+  } catch (err) {
+    next(err);
   }
 };

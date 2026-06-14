@@ -15,7 +15,7 @@ import userRouter from "./routes/user.routes.js";
 import settingRouter from "./routes/settings.routes.js";
 import blogEditorRouter from "./routes/blogEditor.routes.js";
 
-import { errorHandler, notFound } from "./middlewares/error.middleware.js";
+import { errorHandler, notFound } from "./middleware/error.middleware.js";
 
 const app = express();
 
