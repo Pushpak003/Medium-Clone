@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const user = useSelector((store) => store.auth.user);
-  const access_token = useSelector((store) => store.auth.access_token);
+  const access_token = useSelector((store) => store.auth.accessToken);
 
   let { theme, setTheme } = useContext(ThemeContext);
 
@@ -90,7 +90,7 @@ const Navbar = () => {
 
         {access_token ? (
           <>
-            <Link to="/dashbord/notification">
+            <Link to="/dashboard/notifications">
               <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10">
                 <i className="fi fi-rr-bell text-2xl block mt-1"></i>
               </button>

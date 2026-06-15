@@ -11,6 +11,8 @@ import SideNav from "./components/ui/SideNav";
 import EditProfilePage from "./pages/EditProfilePage";
 import ChangePwdPage from "./pages/ChangePwdPage";
 import ManageBlogs from "./pages/ManageBlogs";
+import NotificationsPage from "./pages/notifications.page";
+import DashboardPage from "./pages/dashboard.page";
 import { ProtectedRoute, GuestRoute } from "./components/ProtectedRoute";
 import { createContext, useEffect, useState } from "react";
 
@@ -18,17 +20,13 @@ export const ThemeContext = createContext({});
 
 const App = () => {
   const { pathname } = useLocation();
-
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     const themeFromLs = localStorage.getItem("medium-theme");
-
     if (themeFromLs) {
-      setTheme(() => {
-        document.body.setAttribute("data-theme", themeFromLs);
-        return themeFromLs;
-      });
+      setTheme(themeFromLs);
+      document.body.setAttribute("data-theme", themeFromLs);
     } else {
       document.body.setAttribute("data-theme", theme);
     }
@@ -44,16 +42,18 @@ const App = () => {
         <Route path="/user/:id" element={<ProfilePage />} />
         <Route path="/blog/:id" element={<BlogPage />} />
 
-        {/* Guest-only routes (logged-in hain to home pe redirect) */}
+        {/* Guest only */}
         <Route path="/signin" element={<GuestRoute><UserAuthForm type="sign-in" /></GuestRoute>} />
         <Route path="/signup" element={<GuestRoute><UserAuthForm type="sign-up" /></GuestRoute>} />
 
-        {/* Protected routes (login required) */}
+        {/* Protected */}
         <Route path="/editor" element={<ProtectedRoute><Editor /></ProtectedRoute>} />
         <Route path="/editor/:id" element={<ProtectedRoute><Editor /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute><SideNav /></ProtectedRoute>}>
           <Route path="blogs" element={<ManageBlogs />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route index element={<DashboardPage />} />
         </Route>
 
         <Route path="/settings" element={<ProtectedRoute><SideNav /></ProtectedRoute>}>

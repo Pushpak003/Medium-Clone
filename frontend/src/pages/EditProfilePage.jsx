@@ -1,35 +1,24 @@
-import axios, { formToJSON } from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { profileDataStructure } from "./ProfilePage";
-import { Toaster, toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import AnimationWrapper from "../common/Page-animation";
 import Loader from "../components/ui/Loader";
-import InputBox from "../components/input.component";
-import { Navigate } from "react-router-dom";
+import InputBox from "../components/Input.component";
 import { updateProfileImg, updateUsername } from "../redux/authSlice";
+import api from "../utils/api";
 
 const profileDataStructure = {
-  personal_info: {
-    fullname: "",
-    username: "",
-    profile_img: "",
-    bio: "",
-  },
-  account_info: {
-    total_posts: 0,
-    total_reads: 0,
-  },
+  personal_info: { fullname: "", username: "", profile_img: "", bio: "" },
+  account_info: { total_posts: 0, total_reads: 0 },
   social_links: {},
   joinedAt: "",
 };
 
 const EditProfilePage = () => {
-  const access_token = useSelector((store) => store.auth.access_token);
   const user = useSelector((store) => store.auth.user);
   const dispatch = useDispatch();
 
-  let bioLimit = 150;
+  const bioLimit = 150;
   const editProfileForm = useRef();
 
   const [profile, setProfile] = useState(profileDataStructure);
@@ -37,242 +26,117 @@ const EditProfilePage = () => {
   const [avatar, setAvatar] = useState(null);
   const [charactersLeft, setCharactersLeft] = useState(bioLimit);
 
-  const {
-    personal_info: { email, fullname, username, bio, profile_img },
-    social_links,
-  } = profile;
+  const { personal_info: { email, fullname, username, bio, profile_img }, social_links } = profile;
 
-  console.log(user);
-  console.log(profile);
+  useEffect(() => {
+    api.post("/user/profile", { username: user.username })
+      .then(({ data }) => {
+        setProfile(data.user);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let form = new FormData(editProfileForm.current);
+    const form = new FormData(editProfileForm.current);
+    const formData = Object.fromEntries(form.entries());
+    const { username, bio, youtube, facebook, twitter, github, instagram, website } = formData;
 
-    let formData = {};
+    if (username.length < 3) return toast.error("Username should be at least 3 characters");
+    if (bio.length > bioLimit) return toast.error(`Bio should not exceed ${bioLimit} characters`);
 
-    for (let [key, value] of form.entries()) {
-      formData[key] = value;
-    }
-
-    const {
-      username,
-      bio,
-      youtube,
-      facebook,
-      twitter,
-      github,
-      instagram,
-      website,
-    } = formData;
-
-    if (username.length < 4) {
-      return toast.error("Username should be at least 3 letters long");
-    }
-
-    if (bio.length > bioLimit) {
-      return toast.error(`Bio should not be more that ${bioLimit}`);
-    }
-
-    let x = toast.loading("Updating....");
+    const x = toast.loading("Updating...");
     e.target.setAttribute("disabled", true);
 
-    axios
-      .post(
-        `${import.meta.env.VITE_BASE_URL}/settings/update-profile`,
-        {
-          username,
-          bio,
-          social_links: {
-            youtube,
-            facebook,
-            twitter,
-            github,
-            instagram,
-            website,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer: ${access_token}`,
-          },
-        }
-      )
-      .then(({ data }) => {
-        console.log(data);
-        if (user.username != data.username) {
-          dispatch(updateUsername(data.username));
-        }
-        toast.dismiss(x);
-        e.target.removeAttribute("disabled");
-        toast.success("Profile Updated! 😎");
-      })
-      .catch(({ response }) => {
-        toast.dismiss(x);
-        e.target.removeAttribute("disabled");
-        toast.error(response.data.error);
+    try {
+      const { data } = await api.post("/settings/update-profile", {
+        username, bio,
+        social_links: { youtube, facebook, twitter, github, instagram, website },
       });
+
+      if (user.username !== data.username) {
+        dispatch(updateUsername(data.username));
+      }
+
+      toast.dismiss(x);
+      e.target.removeAttribute("disabled");
+      toast.success("Profile Updated! 😎");
+    } catch ({ response }) {
+      toast.dismiss(x);
+      e.target.removeAttribute("disabled");
+      toast.error(response?.data?.error || "Update failed");
+    }
   };
 
   const handleAvatarUpload = async (event) => {
     try {
-      let x = toast.loading("Uploading image...");
+      const x = toast.loading("Uploading image...");
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "blogapp");
-      formData.append(
-        "cloud_name",
-        `${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}`
-      );
+      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+      formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
 
-      fetch(
-        `https://api.cloudinary.com/v1_1/${
-          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-        }/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data.secure_url);
-          setAvatar(data.secure_url);
-          toast.dismiss(x);
-          toast.success("Image uploaded!");
-        });
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await res.json();
+      setAvatar(data.secure_url);
+      toast.dismiss(x);
+      toast.success("Image uploaded!");
     } catch (error) {
       console.error("Error uploading image:", error);
     }
   };
 
-  const handleImageChange = (event) => {
-    event.preventDefault();
-    if (!avatar) {
-      return toast.error("Choose a photo to change your profile image");
-    }
-    let x = toast.loading("Uploading Image!");
-    axios
-      .post(
-        `${import.meta.env.VITE_BASE_URL}/settings/update-profile-img`,
-        {
-          img: avatar,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        }
-      )
-      .then(() => {
-        toast.dismiss(x);
-        dispatch(updateProfileImg(avatar));
-        // setAvatar(null);
-        window.location.reload();
+  const handleImageChange = async (e) => {
+    e.preventDefault();
+    if (!avatar) return toast.error("Choose a photo first");
 
-        toast.success("Profile Image updated");
-      })
-      .catch((err) => {
-        toast.dismiss(x);
-        console.log(err);
-      });
+    const x = toast.loading("Saving...");
+    try {
+      await api.post("/settings/update-profile-img", { url: avatar });
+      toast.dismiss(x);
+      dispatch(updateProfileImg(avatar));
+      toast.success("Profile image updated");
+    } catch (error) {
+      toast.dismiss(x);
+      console.error(error);
+    }
   };
-
-  useEffect(() => {
-    if (access_token) {
-      axios
-        .post(`${import.meta.env.VITE_BASE_URL}/user/profile`, {
-          username: user.username,
-        })
-        .then(({ data }) => {
-          setProfile(data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
-  }, [access_token]);
-
-  useEffect(() => {
-    if (!access_token) {
-      <Navigate to="/signin" />;
-    }
-  }, []);
 
   return (
     <AnimationWrapper>
-      {loading ? (
-        <Loader />
-      ) : (
+      {loading ? <Loader /> : (
         <form ref={editProfileForm}>
           <Toaster />
-
           <h1 className="max-md:hidden">Edit Profile</h1>
+
           <div className="flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10">
             <div className="max-lg:center mb-5">
               <label className="relative block w-48 h-48 bg-grey rounded-full overflow-hidden">
-                <img src={avatar == null ? profile_img : avatar} alt="" />
-                <input
-                  type="file"
-                  id="avatarInput"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                />
-
+                <img src={avatar ?? profile_img} alt="" />
+                <input type="file" className="hidden" onChange={handleAvatarUpload} />
                 <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center text-white bg-black/30 opacity-0 hover:opacity-100 cursor-pointer">
                   Upload Image
                 </div>
               </label>
-              <button
-                type="button"
-                onClick={handleImageChange}
-                className="btn-light mt-5 max-lg:bg-center lg:w-full px-10"
-              >
+              <button type="button" onClick={handleImageChange} className="btn-light mt-5 max-lg:bg-center lg:w-full px-10">
                 Upload
               </button>
             </div>
 
             <div className="w-full">
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
-                <div>
-                  <InputBox
-                    name="fullname"
-                    type={"text"}
-                    disabled={true}
-                    value={user.fullname}
-                    placeholder="Full Name"
-                    icon="fi-rr-user"
-                  />
-                </div>
-
-                <div>
-                  <InputBox
-                    name="email"
-                    type="email"
-                    value={email}
-                    disabled={true}
-                    placeholder="Email"
-                    icon="fi-rr-envelope"
-                  />
-                </div>
+                <InputBox name="fullname" type="text" disabled value={fullname} placeholder="Full Name" icon="fi-rr-user" />
+                <InputBox name="email" type="email" value={email} disabled placeholder="Email" icon="fi-rr-envelope" />
               </div>
 
-              <InputBox
-                type="text"
-                name="username"
-                value={username}
-                placeholder="Username"
-                icon="fi-rr-at"
-              />
-
-              <p className="text-dark-grey -mt-3">
-                Username will be used to search for users and will be visible to
-                all users
-              </p>
+              <InputBox type="text" name="username" value={username} placeholder="Username" icon="fi-rr-at" />
+              <p className="text-dark-grey -mt-3">Username will be visible to all users</p>
 
               <textarea
                 name="bio"
@@ -280,46 +144,25 @@ const EditProfilePage = () => {
                 defaultValue={bio}
                 className="input-box h-64 lg:h-40 resize-none leading-7 mt-5 pl-5"
                 placeholder="Bio"
-                onChange={(e) =>
-                  setCharactersLeft(bioLimit - e.target.value.length)
-                }
-              ></textarea>
-
-              <p className="mt-1 text-dark-grey">
-                {charactersLeft} characters left
-              </p>
-
+                onChange={(e) => setCharactersLeft(bioLimit - e.target.value.length)}
+              />
+              <p className="mt-1 text-dark-grey">{charactersLeft} characters left</p>
               <p className="my-6 text-dark-grey">Add your socials below</p>
 
               <div className="md:grid md:grid-cols-2 gap-x-6">
-                {Object.keys(social_links).map((key, i) => {
-                  let link = social_links[key];
-
-                  <i
-                    className={`fi ${
-                      key != "website" ? `fi-brands-${key}` : "fi-rr-globe"
-                    }`}
-                  ></i>;
-                  return (
-                    <InputBox
-                      key={i}
-                      name={key}
-                      type="text"
-                      value={link}
-                      placeholder="https://"
-                      icon={`fi ${
-                        key != "website" ? `fi-brands-${key}` : "fi-rr-globe"
-                      }`}
-                    />
-                  );
-                })}
+                {Object.keys(social_links).map((key, i) => (
+                  <InputBox
+                    key={i}
+                    name={key}
+                    type="text"
+                    value={social_links[key]}
+                    placeholder="https://"
+                    icon={`fi ${key !== "website" ? `fi-brands-${key}` : "fi-rr-globe"}`}
+                  />
+                ))}
               </div>
 
-              <button
-                onClick={handleSubmit}
-                className="btn-dark w-auto px-10"
-                type="submit"
-              >
+              <button onClick={handleSubmit} className="btn-dark w-auto px-10" type="submit">
                 Update
               </button>
             </div>

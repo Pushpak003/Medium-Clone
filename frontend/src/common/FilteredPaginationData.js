@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../utils/api";
 
 export const filterPaginationData = async ({
   create_new_arr = false,
@@ -10,19 +10,14 @@ export const filterPaginationData = async ({
 }) => {
   let obj;
 
-  // If we already have data, moving to next page
   if (state != null && !create_new_arr) {
-    obj = { ...state, results: [...state.results, ...data], page: page };
+    // Already data hai — next page append karo
+    obj = { ...state, results: [...state.results, ...data], page };
   } else {
-    // Creating the first time
-    await axios
-      .post(import.meta.env.VITE_BASE_URL + countRoute, data_to_send)
-      .then(({ data: { totalDocs } }) => {
-        obj = { results: data, page: 1, totalDocs };
-      })
-      .catch((err) => console.log(err));
+    // Pehli baar — total count bhi fetch karo
+    const { data: { totalDocs } } = await api.post(countRoute, data_to_send);
+    obj = { results: data, page: 1, totalDocs };
   }
+
   return obj;
 };
-// state - existing data
-// data - data to be attached

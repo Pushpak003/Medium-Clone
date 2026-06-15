@@ -50,11 +50,11 @@ app.get("/health", (req, res) => {
 
 //  Routes
 app.use("/api/v1/auth", authLimiter, authRouter);
-app.use("/api/v1/blog", blogRouter);
-app.use("/api/v1/blog", blogInteractionRouter);
+app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/blogs", blogInteractionRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/settings", settingRouter);
-app.use("/api/v1/blog-editor", uploadLimiter, blogEditorRouter);
+app.use("/api/v1/blogs/editor", uploadLimiter, blogEditorRouter);
 
 //  404 Handler
 app.use(notFound);

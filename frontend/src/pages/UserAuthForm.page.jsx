@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import InputBox from "../components/input.component";
+import { useState } from "react";
+import InputBox from "../components/Input.component";
 import googleIcon from "../imgs/google.png";
-import { Toaster, toast } from "react-hot-toast";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AnimationWrapper from "../common/Page-animation";
-import axios from "axios";
+import api from "../utils/api";
 import { authWithGoogle } from "../common/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate } from "../redux/authSlice";
@@ -15,93 +15,64 @@ const UserAuthForm = ({ type }) => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
-  const user = useSelector((store) => store.auth.user);
-  const access_token = useSelector((store) => store.auth.access_token);
+  // GuestRoute already redirect karti hai agar logged in ho
+  // Yahan dobara check ki zaroorat nahi
 
-  const signup = (fullname, email, password) => {
-    // console.log(email, password, fullname);
-    axios
-      .post(`${import.meta.env.VITE_BASE_URL}/auth/signup`, {
-        fullname,
-        email,
-        password,
-      })
-      .then(({ data }) => {
-        dispatch(authenticate(data));
-      })
-      .catch(({ response }) => {
-        console.log(response);
-        toast.error(response.data.error);
-      });
+  const from = location.state?.from?.pathname || "/";
+
+  const signup = async (fullname, email, password) => {
+    try {
+      const { data } = await api.post("/auth/signup", { fullname, email, password });
+      dispatch(authenticate(data));
+      navigate(from, { replace: true });
+    } catch ({ response }) {
+      toast.error(response?.data?.error || "Signup failed");
+    }
   };
 
-  const signin = (email, password) => {
-    axios
-      .post(`${import.meta.env.VITE_BASE_URL}/auth/signin`, {
-        email,
-        password,
-      })
-      .then(({ data }) => {
-        dispatch(authenticate(data));
-      })
-      .catch(({ response }) => {
-        console.log(response);
-        toast.error(response.data.error);
-      });
+  const signin = async (email, password) => {
+    try {
+      const { data } = await api.post("/auth/signin", { email, password });
+      dispatch(authenticate(data));
+      navigate(from, { replace: true });
+    } catch ({ response }) {
+      toast.error(response?.data?.error || "Signin failed");
+    }
   };
 
-  const handleGoogleAuth = (e) => {
+  const handleGoogleAuth = async (e) => {
     e.preventDefault();
-    authWithGoogle()
-      .then((user) => {
-        axios
-          .post(`${import.meta.env.VITE_BASE_URL}/auth/google`, {
-            access_token: user.accessToken,
-          })
-          .then(({ data }) => {
-            dispatch(authenticate(data));
-          })
-          .catch(({ response }) => {
-            console.log(response);
-            toast.error(response.data.error);
-          });
-      })
-      .catch((err) => {
-        toast.error("Trouble Login using Google");
-        return console.log(err);
+    try {
+      const googleUser = await authWithGoogle();
+      const { data } = await api.post("/auth/google", {
+        access_token: googleUser.accessToken,
       });
+      dispatch(authenticate(data));
+      navigate(from, { replace: true });
+    } catch {
+      toast.error("Trouble signing in with Google");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-    console.log(fullname, email, password);
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if (type === "sign-up" && fullname.length < 3) {
-      return toast.error("Fullname must be at least 3 letters or more;");
+      return toast.error("Fullname must be at least 3 characters");
     }
-
-    if (!email.length) {
-      return toast.error("Enter Email");
-    }
-
-    if (!emailRegex.test(email)) {
-      return toast.error("Email is invalid!");
-    }
-
-    if (password.length < 6) {
-      return toast.error("Password must be at least 6 letters or more");
-    }
+    if (!email.length) return toast.error("Enter email");
+    if (!emailRegex.test(email)) return toast.error("Email is invalid");
+    if (password.length < 6) return toast.error("Password must be at least 6 characters");
 
     if (type === "sign-in") signin(email, password);
     else signup(fullname, email, password);
   };
-  return access_token ? (
-    <Navigate to="/" />
-  ) : (
+
+  return (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
         <form className="w-[80%] max-w-[400px]" onSubmit={handleSubmit}>
@@ -136,9 +107,7 @@ const UserAuthForm = ({ type }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button className="btn-dark center mt-14 ">
-            {type.replace("-", " ")}
-          </button>
+          <button className="btn-dark center mt-14">{type.replace("-", " ")}</button>
 
           <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
             <hr className="w-1/2 border-black" />
@@ -151,7 +120,7 @@ const UserAuthForm = ({ type }) => {
             onClick={handleGoogleAuth}
           >
             <img src={googleIcon} alt="googleIcon" className="w-5" />
-            Continue with google
+            Continue with Google
           </button>
 
           {type === "sign-in" ? (
@@ -160,7 +129,6 @@ const UserAuthForm = ({ type }) => {
               <Link to="/signup" className="underline text-black text-xl ml-1">
                 Join us Today
               </Link>
-              `
             </p>
           ) : (
             <p className="mt-6 text-dark-grey text-xl text-center">
