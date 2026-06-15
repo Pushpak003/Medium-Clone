@@ -158,3 +158,20 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
 🔖 Bookmark System: Allow readers to save stories to a reading list.
 
 👥 Social Graph: Implement a Follow/Unfollow author ecosystem.
+
+## Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+
+Feel free to fork the repository, open issues, or submit Pull Requests to improve the platform!
+
+### Steps to Contribute:
+1. Fork the Project.
+2. Create your Feature Branch (git checkout -b feature/AmazingFeature).
+3. Commit your Changes (git commit -m 'Add some AmazingFeature').
+4. Push to the Branch (git push origin feature/AmazingFeature).
+5. Open a Pull Request.
+
+## License
+Distributed under the MIT License. See LICENSE for more information.
+## Author
+### Pushpak Pathe
