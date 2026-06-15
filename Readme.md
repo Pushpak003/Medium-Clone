@@ -159,7 +159,7 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
 
 👥 Social Graph: Implement a Follow/Unfollow author ecosystem.
 
-## Contributing
+## 🤝Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 Feel free to fork the repository, open issues, or submit Pull Requests to improve the platform!
@@ -171,7 +171,7 @@ Feel free to fork the repository, open issues, or submit Pull Requests to improv
 4. Push to the Branch (git push origin feature/AmazingFeature).
 5. Open a Pull Request.
 
-## License
+## 📄License
 Distributed under the MIT License. See LICENSE for more information.
-## Author
+## 👨‍💻Author
 ### Pushpak Pathe
