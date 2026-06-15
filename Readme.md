@@ -70,11 +70,11 @@ Medium-Clone/
 
 ```
 
-⚙️ Environment Variables
+## ⚙️ Environment Variables
 To run this project locally, you will need to create .env files in both the frontend and backend directories.
 
-Backend (backend/.env)
-```
+### Backend (backend/.env)
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
@@ -84,8 +84,8 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_key
 CLOUDINARY_API_SECRET=your_cloudinary_secret
 ```
-Frontend (frontend/.env)
-```
+### Frontend (frontend/.env)
+```env
 VITE_SERVER_DOMAIN=http://localhost:5000
 VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
@@ -94,10 +94,27 @@ VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_sender_id
 VITE_FIREBASE_APP_ID=your_firebase_app_id
 ```
-🔧 Installation & Setup
+## 🔧 Installation & Setup
 1. Clone the Repository
-   
-## Preview 
+   ```bash
+   git clone <repository-url>
+   cd Medium-Clone
+   ```
+2. Backend Setup
+   ```bash
+   cd backend
+   npm install
+   # Start development server
+   npm run dev
+   ```
+3. Frontend Setup
+    ```bash
+    cd ../frontend
+   npm install
+   # Start development server
+   npm run dev
+    ```   
+## 🖼️ Screenshots
 - Landing Page
 ![medium-ss (5)](https://github.com/harshxraj/medium-clone/assets/128404446/1dad2684-d1dc-4e61-a885-fbcb655134a7)
 
@@ -126,3 +143,18 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
 - Dark Mode
 ![medium-ss (7)](https://github.com/harshxraj/medium-clone/assets/128404446/d9658217-3c11-45ca-b8fa-6b389d77550f)
 
+## 🔮 Future Improvements
+
+⚡ Redis Caching: Cache popular blogs to reduce MongoDB read load.
+
+🐳 Docker Support: Containerize both backend and frontend for seamless deployment.
+
+🧪 Automated Testing: Implement unit and integration tests using Jest and Supertest.
+
+🔄 CI/CD Pipeline: Automate testing and deployment via GitHub Actions.
+
+🔔 Real-Time Notifications: Integrate Socket.io for instant interaction alerts.
+
+🔖 Bookmark System: Allow readers to save stories to a reading list.
+
+👥 Social Graph: Implement a Follow/Unfollow author ecosystem.
