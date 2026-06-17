@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar.component";
+import Footer from "./components/footer.component";
 import UserAuthForm from "./pages/UserAuthForm.page";
 import Editor from "./pages/Editor";
 import Homepage from "./pages/Homepage";
@@ -63,6 +64,8 @@ const App = () => {
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+            {!pathname.startsWith("/editor") && <Footer />}
+
     </ThemeContext.Provider>
   );
 };
