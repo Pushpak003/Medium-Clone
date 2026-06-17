@@ -9,6 +9,9 @@ import { isFirebaseAdminReady, verifyGoogleIdToken } from "../config/firebaseAdm
 export const signup = async (req, res, next) => {
   try {
     const { fullname, email, password } = req.body;
+    // Note: yahan validation nahi karenge — Zod schema middleware mein karega
+    // Abhi existing logic rakho, Zod schemas next step mein banenge
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const username = await generateUsername(email);
 
@@ -34,7 +37,7 @@ export const signin = async (req, res, next) => {
 
     if (!user) {
       return next(new AppError("Invalid email or password", 401));
-    
+      // Note: "User not found" mat bolna — attacker ko email existence pata chal jaata hai
     }
 
     if (user.google_auth) {
@@ -55,7 +58,8 @@ export const signin = async (req, res, next) => {
 };
 
 // ── Google Sign-in ──────────────────────────────────────────────────────────
-
+// Frontend Firebase se Google popup login karta hai, fir ID token yahan bhejta hai.
+// Hum us token ko Firebase Admin se verify karte hain — fake/tampered token reject ho jata hai.
 export const googleAuth = async (req, res, next) => {
   try {
     if (!isFirebaseAdminReady()) {
@@ -80,7 +84,7 @@ export const googleAuth = async (req, res, next) => {
     let user = await User.findOne({ "personal_info.email": email });
 
     if (user) {
-      
+      // Email pehle se password ke saath registered hai — accounts mix mat karo
       if (!user.google_auth) {
         return next(
           new AppError(
@@ -110,6 +114,8 @@ export const googleAuth = async (req, res, next) => {
 };
 
 // ── Refresh Token ─────────────────────────────────────────────────────────────
+// Frontend access token expire hone par yeh call karega
+// Naya access token milega bina dobara login kiye
 export const refreshToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
@@ -118,17 +124,17 @@ export const refreshToken = async (req, res, next) => {
       return next(new AppError("Refresh token required", 400));
     }
 
-  
+    // Token valid hai?
     const decoded = verifyRefreshToken(refreshToken);
 
-   
+    // DB mein stored token se match karo — token rotation ke liye
     const user = await User.findById(decoded.id);
 
     if (!user || user.refreshToken !== refreshToken) {
       return next(new AppError("Invalid refresh token. Please login again.", 401));
     }
 
-   
+    // Naya access token do
     const accessToken = generateAccessToken(user._id);
 
     return res.status(200).json({ success: true, accessToken });
@@ -138,7 +144,7 @@ export const refreshToken = async (req, res, next) => {
 };
 
 // ── Logout ────────────────────────────────────────────────────────────────────
-
+// DB se refresh token delete karo — dono devices se logout
 export const logout = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
