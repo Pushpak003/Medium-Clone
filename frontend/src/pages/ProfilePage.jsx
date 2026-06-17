@@ -50,7 +50,7 @@ const ProfilePage = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const { data } = await api.post("/users/profile", { username: profileId });
+      const { data } = await api.post("/user/profile", { username: profileId });
       if (data.user) setProfile(data.user);
       setProfileLoaded(profileId);
       getBlogs({ user_id: data.user._id });

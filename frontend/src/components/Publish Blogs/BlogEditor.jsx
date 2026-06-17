@@ -97,7 +97,7 @@ const BlogEditor = () => {
 
     try {
       const content = await textEditor.save();
-      await api.post("/blog/create", { title, banner, des, content, tags, draft: true, id: blog_id });
+      await api.post("/blogs/create", { title, banner, des, content, tags, draft: true, id: blog_id });
 
       e.target.classList.remove("disable");
       toast.dismiss(loadingToast);

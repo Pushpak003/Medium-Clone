@@ -32,7 +32,7 @@ const SearchPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data: { users } } = await api.post("/users/search", { query });
+      const { data: { users } } = await api.post("/user/search", { query });
       setUsers(users);
     } catch (err) { console.error(err); }
   };

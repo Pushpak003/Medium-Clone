@@ -8,9 +8,10 @@ import api from "../../utils/api";
 
 export const fetchComments = async ({ skip = 0, blog_id, dispatch, comment_array = null }) => {
   const { data } = await api.post("/blogs/comment/get", { blog_id, skip });
-  data.map((comment) => { comment.childrenLevel = 0; });
-  dispatch(setTotalParentCommentsLoaded(data.length));
-  return comment_array == null ? { results: data } : { results: [...comment_array, ...data] };
+  const comments = data.comments || [];
+  comments.forEach((comment) => { comment.childrenLevel = 0; });
+  dispatch(setTotalParentCommentsLoaded(comments.length));
+  return comment_array == null ? { results: comments } : { results: [...comment_array, ...comments] };
 };
 
 const CommentsContainer = () => {

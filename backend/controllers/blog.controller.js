@@ -144,7 +144,7 @@ export const getBlog = async (req, res, next) => {
       { $inc: { "activity.total_reads": incrementVal } }
     )
       .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname")
-      .select("title des content banner activity publishedAt blog_id tags");
+      .select("title des content banner activity publishedAt blog_id tags draft");
 
     if (!blog) return next(new AppError("Blog not found", 404));
 

@@ -4,7 +4,7 @@ import BlogEditor from "../components/Publish Blogs/BlogEditor";
 import PublishForm from "../components/Publish Blogs/PublishForm";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/ui/Loader";
-import axios from "axios";
+import api from "../utils/api";
 import {
   resetBlogState,
   setBanner,
@@ -34,8 +34,8 @@ const Editor = () => {
       setLoading(false);
       return;
     }
-    axios
-      .post(`${import.meta.env.VITE_BASE_URL}/blog`, {
+    api
+      .post("/blogs", {
         blog_id,
         draft: true,
         mode: "edit",

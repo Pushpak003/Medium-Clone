@@ -12,7 +12,7 @@ const NotificationCommentField = ({ _id, blog_author, index, replyingTo, setRepl
     }
 
     try {
-      await api.post("/blog/comment", {
+      await api.post("/blogs/comment", {
         _id,
         comment: reply,
         blog_author,
