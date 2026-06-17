@@ -83,6 +83,9 @@ REFRESH_TOKEN_SECRET=your_refresh_token_secret
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_key
 CLOUDINARY_API_SECRET=your_cloudinary_secret
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_CLIENT_EMAIL=client_email
+FIREBASE_PRIVATE_KEY=your_projects_private_key
 ```
 ### Frontend (frontend/.env)
 ```env
