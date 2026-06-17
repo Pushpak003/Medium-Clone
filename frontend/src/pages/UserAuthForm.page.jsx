@@ -46,10 +46,11 @@ const UserAuthForm = ({ type }) => {
   const handleGoogleAuth = async (e) => {
     e.preventDefault();
     try {
-      const googleUser = await authWithGoogle();
-      const { data } = await api.post("/auth/google", {
-        access_token: googleUser.accessToken,
-      });
+      const idToken = await authWithGoogle();
+      if (!idToken) {
+        return toast.error("Google sign-in cancelled ya fail ho gaya");
+      }
+      const { data } = await api.post("/auth/google", { id_token: idToken });
       dispatch(authenticate(data));
       navigate(from, { replace: true });
     } catch {

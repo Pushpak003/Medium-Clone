@@ -41,6 +41,12 @@ export const refreshTokenSchema = z.object({
     .min(1, "Refresh token is required"),
 });
 
+export const googleAuthSchema = z.object({
+  id_token: z
+    .string({ required_error: "id_token is required" })
+    .min(1, "id_token is required"),
+});
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z
