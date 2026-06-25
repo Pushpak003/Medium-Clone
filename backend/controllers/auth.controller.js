@@ -5,7 +5,7 @@ import { verifyRefreshToken, generateAccessToken } from "../utils/jwt.utils.js";
 import { AppError } from "../middleware/error.middleware.js";
 import { isFirebaseAdminReady, verifyGoogleIdToken } from "../config/firebaseAdmin.js";
 
-// ── Signup ────────────────────────────────────────────────────────────────────
+// ── Signup 
 export const signup = async (req, res, next) => {
   try {
     const { fullname, email, password } = req.body;
@@ -28,7 +28,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
-// ── Signin ────────────────────────────────────────────────────────────────────
+// ── Signin 
 export const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -57,7 +57,7 @@ export const signin = async (req, res, next) => {
   }
 };
 
-// ── Google Sign-in ──────────────────────────────────────────────────────────
+// ── Google Sign-in 
 // Frontend Firebase se Google popup login karta hai, fir ID token yahan bhejta hai.
 // Hum us token ko Firebase Admin se verify karte hain — fake/tampered token reject ho jata hai.
 export const googleAuth = async (req, res, next) => {
@@ -113,7 +113,7 @@ export const googleAuth = async (req, res, next) => {
   }
 };
 
-// ── Refresh Token ─────────────────────────────────────────────────────────────
+// ── Refresh Token
 // Frontend access token expire hone par yeh call karega
 // Naya access token milega bina dobara login kiye
 export const refreshToken = async (req, res, next) => {
@@ -143,7 +143,7 @@ export const refreshToken = async (req, res, next) => {
   }
 };
 
-// ── Logout ────────────────────────────────────────────────────────────────────
+// ── Logout 
 // DB se refresh token delete karo — dono devices se logout
 export const logout = async (req, res, next) => {
   try {
