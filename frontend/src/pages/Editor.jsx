@@ -22,7 +22,7 @@ const Editor = () => {
   const [loading, setLoading] = useState(true);
 
   const editorState = useSelector((store) => store.blogEditor.editorState);
-  const access_token = useSelector((store) => store.auth.access_token);
+  const access_token = useSelector((store) => store.auth.accessToken);
   const blogState = useSelector((store) => store.blogEditor);
   console.log(blogState);
 

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 
 const SideNav = () => {
-  const access_token = useSelector((store) => store.auth.access_token);
+  const access_token = useSelector((store) => store.auth.accessToken);
 
   if (!access_token) {
     return <Navigate to="/signin" />;

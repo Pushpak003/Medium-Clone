@@ -3,10 +3,10 @@ import { Navigate, useLocation } from "react-router-dom";
 
 // Sirf logged-in users ke liye
 export const ProtectedRoute = ({ children }) => {
-  const { access_token } = useSelector((state) => state.auth);
+  const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
 
-  if (!access_token) {
+  if (!accessToken) {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
@@ -15,9 +15,9 @@ export const ProtectedRoute = ({ children }) => {
 
 // Sirf guest users ke liye (already logged-in hain to home pe bhejo)
 export const GuestRoute = ({ children }) => {
-  const { access_token } = useSelector((state) => state.auth);
+  const { accessToken } = useSelector((state) => state.auth);
 
-  if (access_token) {
+  if (accessToken) {
     return <Navigate to="/" replace />;
   }
 
