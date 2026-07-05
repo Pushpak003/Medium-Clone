@@ -22,7 +22,7 @@ const Editor = () => {
   const [loading, setLoading] = useState(true);
 
   const editorState = useSelector((store) => store.blogEditor.editorState);
-  const access_token = useSelector((store) => store.auth.accessToken);
+  const accessToken = useSelector((store) => store.auth.accessToken);
   const blogState = useSelector((store) => store.blogEditor);
   console.log(blogState);
 
@@ -61,7 +61,7 @@ const Editor = () => {
 
   return (
     <editorContext.Provider value={{ textEditor, setTextEditor }}>
-      {access_token === null ? (
+      {!accessToken ? (
         <Navigate to="/signin" />
       ) : loading ? (
         <Loader />

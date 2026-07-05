@@ -3,6 +3,8 @@ import { Navigate, useLocation } from "react-router-dom";
 
 // Sirf logged-in users ke liye
 export const ProtectedRoute = ({ children }) => {
+  // authSlice stores this as "accessToken", not "access_token" -
+  // destructuring the wrong key always returned undefined here.
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
 

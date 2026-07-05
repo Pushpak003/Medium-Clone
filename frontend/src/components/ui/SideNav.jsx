@@ -3,13 +3,16 @@ import { useSelector } from "react-redux";
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 
 const SideNav = () => {
-  const access_token = useSelector((store) => store.auth.accessToken);
+  const accessToken = useSelector((store) => store.auth.accessToken);
 
-  if (!access_token) {
+  if (!accessToken) {
     return <Navigate to="/signin" />;
   }
 
-  let page = location.pathname.split("/")[2];
+  // location.pathname.split("/")[2] is undefined when the URL has no
+  // sub-page yet (e.g. bare "/dashboard" or "/settings"), which used to
+  // crash on undefined.replace(...). Fall back to an empty string instead.
+  let page = location.pathname.split("/")[2] || "";
 
   const [pageState, setPageState] = useState(page.replace("-", "  "));
   const [showSideNav, setShowSideNav] = useState(false);
@@ -77,7 +80,7 @@ const SideNav = () => {
           </NavLink>
 
           <NavLink
-            to="/dashboard/notification"
+            to="/dashboard/notifications"
             onClick={(e) => setPageState(e.target.innerText)}
             className="sidebar-link"
           >

@@ -14,6 +14,7 @@ import blogInteractionRouter from "./routes/blogInteractions.routes.js";
 import userRouter from "./routes/user.routes.js";
 import settingRouter from "./routes/settings.routes.js";
 import blogEditorRouter from "./routes/blogEditor.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 
 import { errorHandler, notFound } from "./middleware/error.middleware.js";
 
@@ -21,27 +22,10 @@ const app = express();
 
 app.use(helmet());
 
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
-  .split(",")
-  .map((url) => url.trim().replace(/\/$/, "")); // trailing slash hata do
- 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Postman / server-to-server requests mein origin undefined hota hai — allow karo
-      if (!origin) return callback(null, true);
- 
-      const cleanOrigin = origin.replace(/\/$/, "");
-      if (allowedOrigins.includes(cleanOrigin)) {
-        return callback(null, true);
-      }
- 
-      console.warn(`❌ CORS blocked request from origin: ${origin}`);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
@@ -72,6 +56,7 @@ app.use("/api/v1/blogs", blogInteractionRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/settings", settingRouter);
 app.use("/api/v1/blogs/editor", uploadLimiter, blogEditorRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
 //  404 Handler
 app.use(notFound);
