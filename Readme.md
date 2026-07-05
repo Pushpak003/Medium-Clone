@@ -119,32 +119,30 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
     ```   
 ## 🖼️ Screenshots
 - Landing Page
-![medium-ss (5)](https://github.com/harshxraj/medium-clone/assets/128404446/1dad2684-d1dc-4e61-a885-fbcb655134a7)
+<img width="1920" height="1080" alt="mm" src="https://github.com/user-attachments/assets/0aa623e2-bd03-46d5-90de-7a7ce3ae6c6d" />
 
 - Blog Page
-![medium-ss (11)](https://github.com/harshxraj/medium-clone/assets/128404446/4222f9b2-c467-49a0-8c72-80a7a11f9c4a)
+<img width="1920" height="1080" alt="blog" src="https://github.com/user-attachments/assets/09cbeee4-f5a1-4297-a655-7a6bf660886b" />
 
 - Login Page
-![medium-ss (6)](https://github.com/harshxraj/medium-clone/assets/128404446/ece0a12f-7ea3-4deb-a608-67d097595104)
+<img width="1920" height="1080" alt="login" src="https://github.com/user-attachments/assets/05064bbc-31c8-431c-b3e0-750c88ce887c" />
 
 - Blog Creation
-  ![medium-ss (4)](https://github.com/harshxraj/medium-clone/assets/128404446/0d29f027-90ac-42a5-b939-c265d129475b)
+<img width="1920" height="1080" alt="blogcreate" src="https://github.com/user-attachments/assets/0753f3ac-35b8-4e85-a0e5-9852c1e34f48" />
 
 - User Profile Page
-  ![medium-ss (3)](https://github.com/harshxraj/medium-clone/assets/128404446/bfdd15d2-07cf-47da-ae7d-15f907b154df)
+  <img width="1920" height="1080" alt="profilepage" src="https://github.com/user-attachments/assets/50caf474-3c28-4307-81be-83e8fc301992" />
 
-- Dashboard Page
- ![medium-ss (10)](https://github.com/harshxraj/medium-clone/assets/128404446/c94a2791-5ff1-481a-8338-eb18cdabe23f)
-![medium-ss (9)](https://github.com/harshxraj/medium-clone/assets/128404446/2c661578-64a8-418d-8b88-a15a1b4fa70e)
+- Dashboard Page<img width="1920" height="1080" alt="dashboard" src="https://github.com/user-attachments/assets/9aa3fb18-90bc-4eb7-8f05-b349773415cb" />
+<img width="1920" height="1080" alt="dd" src="https://github.com/user-attachments/assets/54eaedfa-a837-4718-8e6f-937e20c2489d" />
 
 - Profile Setting Page
-![medium-ss (2)](https://github.com/harshxraj/medium-clone/assets/128404446/f68581f7-5f45-4e8b-a5c8-0bdc065910b5)
-
+<img width="1920" height="1080" alt="psett" src="https://github.com/user-attachments/assets/4bbb6193-c247-4340-a5e0-3ab21702803d" />
 - Password Change Page
-![medium-ss (1)](https://github.com/harshxraj/medium-clone/assets/128404446/1493513e-8e00-4188-9488-cc389094ae0a)
+<img width="1920" height="1080" alt="passchange" src="https://github.com/user-attachments/assets/06243106-36b8-4044-b177-0442b9f5f74f" />
 
 - Dark Mode
-![medium-ss (7)](https://github.com/harshxraj/medium-clone/assets/128404446/d9658217-3c11-45ca-b8fa-6b389d77550f)
+<img width="1920" height="1080" alt="dark" src="https://github.com/user-attachments/assets/f80257af-1d81-4c2f-9d7a-929323c65bf2" />
 
 ## 🔮 Future Improvements
 
