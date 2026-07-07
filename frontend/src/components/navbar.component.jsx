@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import logo from "../imgs/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import UsernavigationPanel from "./user-navigation.component";
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [seachBoxVisible, setSearchBoxVisible] = useState(false);
   const [userNavPanel, setUserNavPanel] = useState(false);
   const navigate = useNavigate();
+  const userNavRef = useRef(null);
 
   const user = useSelector((store) => store.auth.user);
   const access_token = useSelector((store) => store.auth.accessToken);
@@ -21,11 +22,24 @@ const Navbar = () => {
     setUserNavPanel((curr) => !curr);
   };
 
-  const handleBlur = () => {
-    setTimeout(() => {
-      setUserNavPanel(false);
-    }, 200);
-  };
+  // Click-outside-to-close: the old version put onClick/onBlur on the
+  // wrapper div that also contained the dropdown itself, so clicking any
+  // link INSIDE the panel (Profile/Dashboard/Settings) re-triggered the
+  // toggle and closed the menu before/instead of navigating. This listens
+  // on the document instead, and only closes when the click is genuinely
+  // outside the whole nav+panel container.
+  useEffect(() => {
+    if (!userNavPanel) return;
+
+    const handleClickOutside = (e) => {
+      if (userNavRef.current && !userNavRef.current.contains(e.target)) {
+        setUserNavPanel(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [userNavPanel]);
 
   const handleSearch = (e) => {
     let query = e.target.value;
@@ -96,12 +110,8 @@ const Navbar = () => {
               </button>
             </Link>
 
-            <div
-              className="relative"
-              onClick={() => handleUserNavPanel()}
-              onBlur={handleBlur}
-            >
-              <button className="w-12 h-12 mt-1">
+            <div className="relative" ref={userNavRef}>
+              <button className="w-12 h-12 mt-1" onClick={handleUserNavPanel}>
                 <img
                   src={user.profile_img}
                   alt="profileImg"
@@ -109,7 +119,9 @@ const Navbar = () => {
                 />
               </button>
 
-              {userNavPanel && <UsernavigationPanel />}
+              {userNavPanel && (
+                <UsernavigationPanel onNavigate={() => setUserNavPanel(false)} />
+              )}
             </div>
           </>
         ) : (
