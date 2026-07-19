@@ -2,7 +2,7 @@
 node_modules/
 */node_modules/
 
-# Environment variables — KABHI COMMIT MAT KARO
+# Environment variables —
 .env
 .env.local
 .env.production
